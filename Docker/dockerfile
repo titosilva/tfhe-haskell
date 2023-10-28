@@ -1,0 +1,23 @@
+FROM haskell:latest
+
+RUN mkdir /tfhe/
+WORKDIR /tfhe/
+
+RUN apt-get update
+RUN apt-get -y install build-essential cmake cmake-curses-gui
+RUN apt-get -y install git
+RUN git clone --recurse-submodules --branch=master https://github.com/tfhe/tfhe.git
+WORKDIR /tfhe/tfhe/
+
+RUN mkdir build
+WORKDIR /tfhe/tfhe/build/
+RUN cmake ../src
+
+RUN echo "export TFHE_PREFIX=/usr/local" >> /etc/profile
+RUN echo "export C_INCLUDE_PATH=\$C_INCLUDE_PATH:\$TFHE_PREFIX/include" >> /etc/profile
+RUN echo "export CPLUS_INCLUDE_PATH=\$CPLUS_INCLUDE_PATH:\$TFHE_PREFIX/include" >> /etc/profile
+RUN echo "export LIBRARY_PATH=\$LIBRARY_PATH:\$TFHE_PREFIX/lib" >> /etc/profile
+RUN echo "export LD_LIBRARY_PATH=\$LD_LIBRARY_PATH:\$TFHE_PREFIX/lib" >> /etc/profile
+
+RUN make
+RUN make install

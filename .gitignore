@@ -1,0 +1,8 @@
+.devcontainer
+.vscode
+**.o
+**.key
+**.data
+**.params
+**.hi
+main
